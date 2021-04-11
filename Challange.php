@@ -1,6 +1,4 @@
 <?php
-// text = yes rating=highest date=newest
-
 
 function compare_textyes($l, $r)
 {
@@ -21,6 +19,19 @@ function compare_ratinghi($l, $r)
     else if ($l->rating<$r->rating) {
         return 1;
     }
+    else return 0;
+}
+
+function compare_ratinglo($l, $r)
+{
+    if ($l->rating < $r->rating) {
+        return -1;
+    }
+
+    else if ($l->rating > $r->rating) {
+        return 1;
+    }
+    else return 0;
 }
 
 function compare_datenew($l, $r)
@@ -32,6 +43,21 @@ function compare_datenew($l, $r)
     else if ($l->reviewCreatedOnDate < $r->reviewCreatedOnDate) {
         return 1;
     }
+    else return 0;
+
+}
+
+function compare_dateold($l, $r)
+{
+    if ($l->reviewCreatedOnDate < $r->reviewCreatedOnDate) {
+        return -1;
+    }
+
+    else if ($l->reviewCreatedOnDate > $r->reviewCreatedOnDate) {
+        return 1;
+    }
+    else return 0;
+
 }
 
 
@@ -45,15 +71,7 @@ $data = file_get_contents('reviews.json',true);
 $string = str_replace("\xEF\xBB\xBF",'',$data);
 $myarray = json_decode($string);
 
-//var_dump($myarray);
 
-/*for($x=0;$x<count($myarray);$x++)
-{
-    $temp=$myarray[$x];
-    echo  $temp->reviewText ;
-    echo "<br>";
-
-}*/
 
 $Filtered= array();
 for ($x=0;$x<count($myarray);$x++)
@@ -64,9 +82,27 @@ for ($x=0;$x<count($myarray);$x++)
     }
 }
 
-usort($Filtered, "compare_datenew" );
-usort($Filtered, "compare_ratinghi" );
-usort($Filtered, "compare_textyes" );
+
+if ($date=="new")
+{
+    usort($Filtered, "compare_datenew" );
+}
+else
+{
+    usort($Filtered, "compare_dateold" );
+}
+if($rating=="high")
+{
+    usort($Filtered, "compare_ratinghi" );
+}
+else
+{
+    usort($Filtered, "compare_ratinglo" );
+}
+if($text=="true")
+{
+    usort($Filtered, "compare_textyes" );
+}
 
 
 
